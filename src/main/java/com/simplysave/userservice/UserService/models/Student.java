@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Karabo Pheko
@@ -18,13 +19,14 @@ import javax.persistence.*;
 public class Student extends User {
 
     @Id
-    @Column(name = "student_no", nullable = false)
+    @Column(name = "student_no", nullable = true)
     private String studentNo;
 
-    @Column(name = "id_no", nullable = false)
+    @Column(name = "id_no", nullable = true)
     private String idNo;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = true)
     private String imageUrl;
+
 
 }

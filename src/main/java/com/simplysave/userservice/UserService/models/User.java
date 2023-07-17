@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@MappedSuperclass
 @Table(name = "users")
 public class User {
 
