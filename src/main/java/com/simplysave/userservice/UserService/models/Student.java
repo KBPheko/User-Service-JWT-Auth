@@ -6,6 +6,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * @author Karabo Pheko
+ * */
+
 @Getter
 @Setter
 @NoArgsConstructor
