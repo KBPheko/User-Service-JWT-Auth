@@ -11,9 +11,10 @@ public class RegistrationDto {
 
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
     private String cellphoneNumber;
     private String password;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date createdAt = new Date();
+    private Date updatedAt = new Date();
 }
