@@ -16,16 +16,16 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "students")
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Student extends User {
 
-    @Id
-    @Column(name = "student_no", nullable = true)
+    @Column(name = "student_no", nullable = false)
     private String studentNo;
 
-    @Column(name = "id_no", nullable = true)
+    @Column(name = "id_no", nullable = false)
     private String idNo;
 
-    @Column(name = "image_url", nullable = true)
+    @Column(name = "image_url")
     private String imageUrl;
 
 
