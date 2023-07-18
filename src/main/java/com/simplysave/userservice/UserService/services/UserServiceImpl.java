@@ -2,7 +2,9 @@ package com.simplysave.userservice.UserService.services;
 
 import com.simplysave.userservice.UserService.DTO.LoginDto;
 import com.simplysave.userservice.UserService.DTO.RegistrationDto;
+import com.simplysave.userservice.UserService.models.Admin;
 import com.simplysave.userservice.UserService.models.Role;
+import com.simplysave.userservice.UserService.models.Student;
 import com.simplysave.userservice.UserService.models.User;
 import com.simplysave.userservice.UserService.repositories.RoleRepository;
 import com.simplysave.userservice.UserService.repositories.UserRepository;
@@ -14,10 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -62,30 +61,79 @@ public class UserServiceImpl implements UserService{
     @Override
     public void register(RegistrationDto registrationDto) {
         // Create a new user entity and set the necessary details
-        User user = new User();
+       // User user = new User();
+        Student student = new Student();
 
-        user.setFirstName(registrationDto.getFirstName());
-        user.setLastName(registrationDto.getLastName());
-        user.setEmail(registrationDto.getEmail());
-        user.setUsername(registrationDto.getUsername());
+        student.setFirstName(registrationDto.getFirstName());
+        student.setLastName(registrationDto.getLastName());
+        student.setEmail(registrationDto.getEmail());
+        student.setUsername(registrationDto.getUsername());
         // Encode the password before saving
         String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
-        user.setPassword(encodedPassword);
-        user.setCellphoneNumber(registrationDto.getCellphoneNumber());
-       //Date
-        user.setCreatedAt(registrationDto.getCreatedAt());
-        user.setUpdatedAt(registrationDto.getUpdatedAt());
+        student.setPassword(encodedPassword);
+        student.setCellphoneNumber(registrationDto.getCellphoneNumber());
+        // Date
+        student.setCreatedAt(registrationDto.getCreatedAt());
+        student.setUpdatedAt(registrationDto.getUpdatedAt());
 
         // Assign ROLE_STUDENT to new registered user
         Optional<Role> optionalRole = roleRepository.findByName("ROLE_STUDENT");
-        Role userRole = optionalRole.orElseThrow(() -> new IllegalStateException("Role not found"));
+        Role userRole;
+        if (optionalRole.isPresent()) {
+            userRole = optionalRole.get();
+        } else {
+            // Create the role if it doesn't exist
+            userRole = new Role("ROLE_STUDENT");
+            roleRepository.save(userRole);
+        }
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
-        user.setRoles(roles);
+        student.setRoles(roles);
+
+        // EXTRA STUDENT INFORMATION
+        student.setStudentNo(registrationDto.getStudentNo());
+        student.setIdNo(registrationDto.getIdNo());
+        student.setImageUrl(registrationDto.getImageUrl());
 
         // Save the new user to the database
-        userRepository.save(user);
+        userRepository.save(student);
+        createAdmin();
     }
+
+    public Admin createAdmin(){
+
+        String adminEmail = "admin@gmail.com";
+        Admin a = Admin.builder().adminNo("12345673454").build();
+        if (!userRepository.existsByEmail(adminEmail)){
+
+            a.setFirstName("Karabo");
+            a.setLastName("Pheko");
+            a.setUsername("Admin");
+            a.setCreatedAt(new Date());
+            a.setUpdatedAt(new Date());
+            a.setPassword("admin12345");
+            a.setCellphoneNumber("0118475934");
+
+            // Assign ROLE_ADMIN to the admin user
+            Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
+            Role adminRole;
+            if (optionalRole.isPresent()) {
+                adminRole = optionalRole.get();
+            } else {
+                // Create the role if it doesn't exist
+                adminRole = new Role("ROLE_ADMIN");
+                roleRepository.save(adminRole);
+            }
+            Set<Role> roles = new HashSet<>();
+            roles.add(adminRole);
+            a.setRoles(roles);
+
+            userRepository.save(a);
+
+        }
+        return a;
+    }
+
 
     @Override
     public void initiatePasswordReset(String email) {

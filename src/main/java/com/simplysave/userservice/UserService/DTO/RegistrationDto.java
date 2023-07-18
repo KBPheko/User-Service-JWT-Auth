@@ -17,4 +17,9 @@ public class RegistrationDto {
     private String password;
     private Date createdAt = new Date();
     private Date updatedAt = new Date();
+
+    //Student
+    private String studentNo;
+    private String idNo;
+    private String imageUrl;
 }
